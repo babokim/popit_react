@@ -67,7 +67,20 @@ export default class PostCard extends React.Component {
     let coverImage = post.mediumImage ? post.mediumImage : post.image;
     coverImage = coverImage ? coverImage : this.getDefaultImage(post.id);
     const postUrl = `https://www.popit.kr/${post.postName}/`;
-    const postLink = `${PUBLIC_PATH}/${post.postName}/`;
+    let postLink = `${PUBLIC_PATH}/${post.postName}/`;
+
+    let hasParam = false;
+    if (this.props.utm_source) {
+      postLink += "?utm_source=" + this.props.utm_source;
+      hasParam = true;
+    }
+
+    if (this.props.utm_campaign) {
+      postLink += hasParam ? "&" : "?";
+      postLink += "utm_campaign=" + this.props.utm_campaign;
+      hasParam = true;
+    }
+
     const fbLikeUrl = PostApi.getFacebookShareLink(post);
 
     let shareButton = (<div></div>);

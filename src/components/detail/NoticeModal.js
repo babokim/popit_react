@@ -91,10 +91,12 @@ export default class NoticeModal extends React.Component {
 
     const postCard =
       noticePost ? ( <PostCard key={noticePost.id}
-                        post={noticePost}
-                        index={1}
-                        showAuthor={false}
-                        showHighlight={false} />)
+                               post={noticePost}
+                               index={1}
+                               utm_source={"popit"}
+                               utm_campaign={"notice"}
+                               showAuthor={false}
+                               showHighlight={false} />)
         : (<div>No data</div>);
 
     return (
