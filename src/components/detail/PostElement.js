@@ -4,10 +4,6 @@ import decodeHtml from 'decode-html';
 import { dracula } from 'react-syntax-highlighter/styles/hljs';
 import {renderToString} from "react-dom/server";
 import Iframe from 'react-iframe';
-import SlideShareEmbed from './SlideShareEmbed';
-import fetch from "isomorphic-fetch";
-import DomParser from "dom-parser";
-import jQuery from "jquery";
 
 class HtmlElement extends React.Component {
   constructor(props) {
