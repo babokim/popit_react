@@ -30,14 +30,23 @@ export default class SinglePostPage extends React.Component {
   constructor(props) {
     super(props);
 
+    this.parsePostContents = this.parsePostContents.bind(this);
+    this.getPostByPermalink = this.getPostByPermalink.bind(this);
+    this.getGoogleAd = this.getGoogleAd.bind(this);
+    this.getSitePreference = this.getSitePreference.bind(this);
+    this.findSlideShareElement = this.findSlideShareElement.bind(this);
+
+    this.postElements = [];
     let post;
     if (process.env.BROWSER) {
       if (window.__INITIAL_DATA__) {
         post = window.__INITIAL_DATA__.data;
+        this.postElements = this.parsePostContents(post);
       }
       delete window.__INITIAL_DATA__;
     } else {
       post = this.props.staticContext.data.data;
+      this.postElements = this.parsePostContents(post);
     }
     this.state = {
       post: post,
@@ -45,19 +54,35 @@ export default class SinglePostPage extends React.Component {
       showNotice: false,
       noticePostId: "",
       noticeDesc: "",
+      checkedPostElements: false,
     };
+
     this.page = 0;
-    this.getPostByPermalink = this.getPostByPermalink.bind(this);
-    this.getGoogleAd = this.getGoogleAd.bind(this);
-    this.getSitePreference = this.getSitePreference.bind(this);
   }
 
   componentDidMount () {
     if (!this.state.post) {
       this.getPostByPermalink(this.props.match.params.permalink);
     }
+
+    this.findSlideShareElement();
     this.getGoogleAd();
     this.getSitePreference();
+  }
+
+  findSlideShareElement() {
+    for (let i = 0; i < this.postElements.length; i++) {
+      const postElement = this.postElements[i];
+      if (postElement instanceof EmbeddedElement) {
+        if (postElement.isSlideShare()) {
+          postElement.getSlideShareIFrame().then(html => {
+            this.setState({
+              checkedPostElements: true
+            });
+          });
+        }
+      }
+    }
   }
 
   getGoogleAd() {
@@ -113,17 +138,59 @@ export default class SinglePostPage extends React.Component {
           alert("Error:" + json.message);
           return;
         }
-        this.setState({
-          post: json.data,
-        });
+        this.postElements = this.parsePostContents(json.data);
       })
       .catch(error => {
         alert("Error:" + error);
       });
   };
 
+  parsePostContents(post) {
+    if (!post.content) {
+      return [];
+    }
+    const sentences = post.content.split("\n");
+
+    let postElement = null;
+    let postElements = [];
+
+    for (let i = 0; i < sentences.length; i++) {
+      let eachSentence = "";
+      try {
+        eachSentence = decodeURIComponent(sentences[i]);
+      } catch(e) {
+        eachSentence = sentences[i];
+      }
+      eachSentence = eachSentence.replace('\n', '').replace('\r', '');
+
+      if (eachSentence.toString().trim().length == 0 || eachSentence === '&nbsp;') {
+        continue;
+      }
+
+      if (postElement == null) {
+        postElement = PostElement.newPostElement(eachSentence);
+      } else {
+        if (postElement.needNextLine()) {
+          postElement.addNextLine(eachSentence);
+        }
+      }
+
+      if (postElement.isFinished()) {
+        postElements.push(postElement);
+        postElement = null;
+      }
+    }
+
+    if (postElement != null) {
+      postElements.push(postElement);
+    }
+
+    return postElements;
+  }
+
   render() {
     const { post, googleAds } = this.state;
+    const postElements = this.postElements;
     if (!post) {
       return (<div style={{textAlign: 'center', marginTop: 20}}>Loading...</div>);
     }
@@ -158,45 +225,7 @@ export default class SinglePostPage extends React.Component {
     });
     const tagSeparator = tags.length > 0 ? " | " : "";
 
-    const sentences = post.content.split("\n");
-
-    let postElement = null;
-    let postElements = [];
-
-    let verbose = false;
-    for (let i = 0; i < sentences.length; i++) {
-      let eachSentence = "";
-      try {
-        eachSentence = decodeURIComponent(sentences[i]);
-      } catch(e) {
-        eachSentence = sentences[i];
-      }
-      eachSentence = eachSentence.replace('\n', '').replace('\r', '');
-
-      if (eachSentence.toString().trim().length == 0 || eachSentence === '&nbsp;') {
-        continue;
-      }
-
-      if (postElement == null) {
-        postElement = PostElement.newPostElement(eachSentence);
-      } else {
-        if (postElement.needNextLine()) {
-          postElement.addNextLine(eachSentence);
-        }
-      }
-
-      if (postElement.isFinished()) {
-        postElements.push(postElement);
-        postElement = null;
-      }
-    }
-
-    if (postElement != null) {
-      postElements.push(postElement);
-    }
-
     let middleAdIndex = Math.floor(postElements.length / 2);
-
     let componentIndex = 0;
     let postHtml = "";
 

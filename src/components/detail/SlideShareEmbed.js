@@ -8,9 +8,7 @@ export default class SlideShareEmbed extends React.Component {
     super(props);
     this.state = {
       iframeSrc: "",
-    }
-
-    this.componentDidMount = this.componentDidMount.bind(this);
+    };
   }
 
   componentDidMount() {
@@ -21,6 +19,7 @@ export default class SlideShareEmbed extends React.Component {
       fetch(slideshareApi, {method: 'GET', headers: {'Content-Type': 'json'}})
         .then(res => res.json())
         .then(json => {
+          console.log(">>>>json:", json);
           if (!json.success) {
             console.log("Error: ", json.message);
             return;
@@ -42,8 +41,7 @@ export default class SlideShareEmbed extends React.Component {
   }
 
   render() {
-    const { iframeSrc } = this.state;
-    const { slideshareLink } = this.props;
+    const { iframeSrc, slideshareLink } = this.props;
 
     if (!iframeSrc) {
       return (

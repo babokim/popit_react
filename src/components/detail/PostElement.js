@@ -5,6 +5,9 @@ import { dracula } from 'react-syntax-highlighter/styles/hljs';
 import {renderToString} from "react-dom/server";
 import Iframe from 'react-iframe';
 import SlideShareEmbed from './SlideShareEmbed';
+import fetch from "isomorphic-fetch";
+import DomParser from "dom-parser";
+import jQuery from "jquery";
 
 class HtmlElement extends React.Component {
   constructor(props) {
@@ -366,12 +369,18 @@ class EmbeddedElement extends PostElement {
     this.embeddedTag = embeddedTag;
     this.contentsType = null;
     this.embeddedLink = null;
+    this.iframeHtml = null;
 
     this.parseTag = this.parseTag.bind(this);
-
+    this.getHtmlString = this.getHtmlString.bind(this);
+    this.isSlideShare = this.isSlideShare.bind(this);
+    this.getSlideShareIFrame = this.getSlideShareIFrame.bind(this);
     this.parseTag();
   }
 
+  isSlideShare() {
+    return this.contentsType == "slideshare" || this.embeddedLink.indexOf("www\.slideshare\.net") >= 0;
+  }
   parseTag() {
     const startIndex = this.embeddedTag.indexOf("[embed]");
     const endIndex = this.embeddedTag.indexOf("[/embed]");
@@ -391,21 +400,14 @@ class EmbeddedElement extends PostElement {
 
   getHtmlString() {
     if (this.embeddedLink == null) {
-      return `<p>Link: ${this.embeddedTag}</p>`;
-    }
-    return `<p>Link: <a href="${this.embeddedLink}" target="_blank">${this.embeddedLink}</a></p>`;
-  }
-
-  getComponent(key) {
-    if (this.embeddedLink == null) {
-      return (<HtmlElement key={key} html={`<p>Link: ${this.embeddedTag}</p>`}/>);
+      return renderToString(<HtmlElement key={key} html={`<p>Link: ${this.embeddedTag}</p>`}/>);
     }
     if (this.contentsType == "youtube") {
       const url = new URL(this.embeddedLink);
       const contentId = url.searchParams.get("v");
       if (contentId) {
         const link = `https://www.youtube.com/embed/${contentId}`;
-        return (
+        return renderToString(
           <div className="post-embed" style={{margin: 10}} key={key}>
             <Iframe url={link}
                     width="800px"
@@ -416,13 +418,43 @@ class EmbeddedElement extends PostElement {
           </div>
         )
       } else {
-        return (<HtmlElement key={key} html={`<p>Link: <a href="${this.embeddedLink}" target="_blank">${this.embeddedLink}</a></p>`}/>);
+        return renderToString(<HtmlElement key={key} html={`<p>Link: <a href="${this.embeddedLink}" target="_blank">${this.embeddedLink}</a></p>`}/>);
       }
-    } else if (this.contentsType == "slideshare") {
-      return (<SlideShareEmbed slideshareLink={this.embeddedLink} key={key}/>);
+    } else if (this.isSlideShare()) {
+      if (this.iframeHtml) {
+        return this.iframeHtml;
+      } else {
+        return renderToString((
+          <div className="post-embed" style={{margin: 10}}>
+            <p>Link: <a href={this.embeddedLink} target="_blank">{this.embeddedLink}</a></p>
+          </div>
+        ));
+      }
     }
 
-    return (<HtmlElement key={key} html={`<p>Link: ${this.embeddedTag}</p>`}/>);
+    return renderToString(<HtmlElement key={key} html={`<p>Link: ${this.embeddedTag}</p>`}/>);
+  }
+
+  getSlideShareIFrame() {
+    const slideshareApi = `https://www.popit.kr/api/GetSlideShareEmbedLink?link=${this.embeddedLink}`;
+
+    try {
+      return fetch(slideshareApi, {method: 'GET', headers: {'Content-Type': 'json'}})
+        .then(res => res.json())
+        .then(json => {
+          if (!json.success) {
+            console.log("Error: ", json.message);
+            return;
+          }
+          this.iframeHtml = json.data.html;
+          return this.iframeHtml;
+        })
+        .catch(error => {
+          console.log('Error: ', error);
+        });
+    } catch (error) {
+      console.log('Error: ', error);
+    }
   }
 }
 
