@@ -113,7 +113,7 @@ export default class SinglePostPage extends React.Component {
         if (json.data) {
           const postId = json.data.value.split(",")[0];
           const description = json.data.value.substr(postId.length + 1).trim();
-          if (postId == this.state.post.id) {
+          if (!this.state.post || postId == this.state.post.id) {
             return;
           }
           setTimeout(() => {

@@ -59,12 +59,12 @@ export default class MobilePost extends React.Component {
       <div style={{marginTop: marginTop, padding: "10px", background: '#ffffff', borderRadius: 10}}>
         <Row>
           <Col span={24}>
-            <Link to={postLink}><h3 className="post_title_mobile">{post.title}</h3></Link>
+            <a href={postLink}><h3 className="post_title_mobile">{post.title}</h3></a>
           </Col>
         </Row>
         <Row>
           <Col span={24}>
-            <div style={{marginTop: 10}}><Link to={postLink}><img style={{width: '100%', height: 200}} src={coverImage}/></Link></div>
+            <div style={{marginTop: 10}}><a href={postLink}><img style={{width: '100%', height: 200}} src={coverImage}/></a></div>
           </Col>
         </Row>
         <Row>

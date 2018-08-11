@@ -396,7 +396,7 @@ class EmbeddedElement extends PostElement {
 
   getHtmlString() {
     if (this.embeddedLink == null) {
-      return renderToString(<HtmlElement key={key} html={`<p>Link: ${this.embeddedTag}</p>`}/>);
+      return renderToString(<HtmlElement html={`<p>Link: ${this.embeddedTag}</p>`}/>);
     }
     if (this.contentsType == "youtube") {
       const url = new URL(this.embeddedLink);
@@ -404,7 +404,7 @@ class EmbeddedElement extends PostElement {
       if (contentId) {
         const link = `https://www.youtube.com/embed/${contentId}`;
         return renderToString(
-          <div className="post-embed" style={{margin: 10}} key={key}>
+          <div className="post-embed" style={{margin: 10}}>
             <Iframe url={link}
                     width="800px"
                     height="400px"
@@ -414,7 +414,7 @@ class EmbeddedElement extends PostElement {
           </div>
         )
       } else {
-        return renderToString(<HtmlElement key={key} html={`<p>Link: <a href="${this.embeddedLink}" target="_blank">${this.embeddedLink}</a></p>`}/>);
+        return renderToString(<HtmlElement html={`<p>Link: <a href="${this.embeddedLink}" target="_blank">${this.embeddedLink}</a></p>`}/>);
       }
     } else if (this.isSlideShare()) {
       if (this.iframeHtml) {
@@ -428,7 +428,7 @@ class EmbeddedElement extends PostElement {
       }
     }
 
-    return renderToString(<HtmlElement key={key} html={`<p>Link: ${this.embeddedTag}</p>`}/>);
+    return renderToString(<HtmlElement html={`<p>Link: ${this.embeddedTag}</p>`}/>);
   }
 
   getSlideShareIFrame() {
