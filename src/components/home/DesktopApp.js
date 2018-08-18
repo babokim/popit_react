@@ -7,6 +7,7 @@ import GoogleAd from '../GoogleAd';
 import PostApi from "../../services/PostApi";
 import PopitHeader from "../PopitHeader";
 import PopitFooter from "../PopitFooter";
+import TagListWidget from "../TagListWidget";
 
 import '../popit.css';
 
@@ -74,9 +75,9 @@ export default class DesktopApp extends React.Component {
             <div style={{padding: 15}}>
               <RecentPosts/>
             </div>
-            <div style={{textAlign: 'center'}}>
-              {topAd}
-            </div>
+            {/*<div style={{textAlign: 'center'}}>*/}
+              {/*{topAd}*/}
+            {/*</div>*/}
             <div>
               <div style={{padding: 15}}>
                 <div style={{float: "left", marginBottom: 10, marginRight: 45}}>
@@ -90,9 +91,6 @@ export default class DesktopApp extends React.Component {
             </div>
           </div>
           <div style={{float: 'left'}}>
-            <div style={{width: 300, marginTop: 15, marginBottom: 15}}>
-              {middleAd}
-            </div>
             <div style={{width: 300}}>
               <div className="fb-page"
                    data-href="https://www.facebook.com/popitkr"
@@ -103,9 +101,15 @@ export default class DesktopApp extends React.Component {
                    data-show-facepile="true">
               </div>
             </div>
-            <div style={{width: 300, marginTop: 15}}>
-              {bottomAd}
+            <div style={{width: 300, height: 300, marginTop: 15, marginBottom: 15}}>
+              {middleAd}
             </div>
+            <div style={{width: 300, marginTop: 15, marginBottom: 15}}>
+              <TagListWidget/>
+            </div>
+            {/*<div style={{width: 300, marginTop: 15}}>*/}
+              {/*{bottomAd}*/}
+            {/*</div>*/}
           </div>
           <div style={{clear: 'both'}}></div>
         </Content>

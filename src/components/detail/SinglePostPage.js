@@ -249,9 +249,9 @@ export default class SinglePostPage extends React.Component {
           postHtml += "\n" + elementHtml;
           componentIndex++;
         }
-        if (index == 2) {
-          postHtml += "\n" + renderToString((<DableWidget widgetId="1XDOg2le"/>));
-        }
+        // if (index == 2) {
+        //   postHtml += "\n" + renderToString((<DableWidget widgetId="1XDOg2le"/>));
+        // }
       });
     }
 
@@ -274,7 +274,7 @@ export default class SinglePostPage extends React.Component {
                   <div className="post-inner">
                     <div className="post-content" itemProp="articleBody">
                       <div><h1>{decodeHtml(post.title)}</h1></div>
-                      { ads[0] }
+                      {/*{ ads[0] }*/}
                       <div>
                         <div style={{display: 'none'}}>{post.id}</div>
                         <AuthorCard author={post.author} postDate={post.date}/>
@@ -286,7 +286,7 @@ export default class SinglePostPage extends React.Component {
                       <div style={{marginTop:10}} className="entry-content">
                         <div dangerouslySetInnerHTML={{ __html: postHtml }} />
                       </div>
-                      { ads[1] }
+                      {/*{ ads[1] }*/}
                       <DableWidget widgetId='370W3Kox'/>
                       <div style={{marginTop:20, textAlign: 'center'}} >
                         <div className="fb-page"
@@ -335,12 +335,11 @@ export default class SinglePostPage extends React.Component {
                   </div>
                 </div>
               </div>
-              { ads[0] }
               <div style={{marginTop:10}} className="entry-content">
                 <div dangerouslySetInnerHTML={{ __html: postHtml }} />
-                { ads[2] }
+                { ads[0] }
               </div>
-              <DableWidget widgetId="wXQ42RlA"/>
+              {/*<DableWidget widgetId="wXQ42RlA"/>*/}
               <div style={{marginTop:30}} >
                 <hr/>
                 <FBComment fbPluginUrl={fbPluginUrl}/>
@@ -362,11 +361,11 @@ export default class SinglePostPage extends React.Component {
                    data-show-facepile="true"
               />
             </div>
-            <div style={{marginTop: 20}}>
-              <AuthorPostsWidget author={post.author} except={post.id}/>
-            </div>
             <div style={{width: 300, height: 300}}>
               { ads[1] }
+            </div>
+            <div style={{marginTop: 20}}>
+              <AuthorPostsWidget author={post.author} except={post.id}/>
             </div>
             <div style={{marginTop: 20}}>
               <DableWidget widgetId="goPgAyXQ"/>

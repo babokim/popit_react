@@ -133,14 +133,14 @@ export default class MobileApp extends React.Component {
 
     let mobileAds = [];
 
-    if (googleAds) {
-      mobileAds.push((googleAds["ad.index.mobile.top"]) ? (
-        <GoogleAd googleAd={googleAds["ad.index.mobile.top"].value}></GoogleAd>) : (<div></div>));
-      mobileAds.push((googleAds["ad.index.mobile.middle"]) ? (
-        <GoogleAd googleAd={googleAds["ad.index.mobile.middle"].value}></GoogleAd>) : (<div></div>));
-      mobileAds.push((googleAds["ad.index.mobile.bottom"]) ? (
-        <GoogleAd googleAd={googleAds["ad.index.mobile.bottom"].value}></GoogleAd>) : (<div></div>));
-    }
+    // if (googleAds) {
+    //   mobileAds.push((googleAds["ad.index.mobile.top"]) ? (
+    //     <GoogleAd googleAd={googleAds["ad.index.mobile.top"].value}></GoogleAd>) : (<div></div>));
+    //   mobileAds.push((googleAds["ad.index.mobile.middle"]) ? (
+    //     <GoogleAd googleAd={googleAds["ad.index.mobile.middle"].value}></GoogleAd>) : (<div></div>));
+    //   mobileAds.push((googleAds["ad.index.mobile.bottom"]) ? (
+    //     <GoogleAd googleAd={googleAds["ad.index.mobile.bottom"].value}></GoogleAd>) : (<div></div>));
+    // }
 
     let cardItems = [];
     let cardItemIndex = 0;
